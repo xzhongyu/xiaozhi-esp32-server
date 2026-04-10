@@ -14,16 +14,10 @@ EMOTION_EMOJI_MAP = {
     "SURPRISED": "😲",
     "EMO_UNKNOWN": "😶",  # 未知情绪默认用中性表情
 }
-# EVENT_EMOJI_MAP = {
-#     "<|BGM|>": "🎼",
-#     "<|Speech|>": "",
-#     "<|Applause|>": "👏",
-#     "<|Laughter|>": "😀",
-#     "<|Cry|>": "😭",
-#     "<|Sneeze|>": "🤧",
-#     "<|Breath|>": "",
-#     "<|Cough|>": "🤧",
-# }
+def extract_asr_content(text) -> str:
+    """Extract content string from lang_tag_filter output (dict or str)."""
+    return text.get("content", "") if isinstance(text, dict) else text
+
 
 def lang_tag_filter(text: str) -> dict | str:
     """
@@ -59,21 +53,15 @@ def lang_tag_filter(text: str) -> dict | str:
     # 按照 FunASR 的固定顺序提取标签，返回 dict
     language = all_tags[0] if len(all_tags) > 0 else "zh"
     emotion = all_tags[1] if len(all_tags) > 1 else "NEUTRAL"
-    # event = all_tags[2] if len(all_tags) > 2 else "Speech"  # 事件标签暂不使用
 
     result = {
         "content": clean_text,
         "language": language,
         "emotion": emotion,
-        # "event": event,
     }
 
-    # 添加 emoji 映射
     if emotion in EMOTION_EMOJI_MAP:
         result["emotion"] = EMOTION_EMOJI_MAP[emotion]
-    # 事件标签暂不使用
-    # if event in EVENT_EMOJI_MAP:
-    #     result["event"] = EVENT_EMOJI_MAP[event]
 
     return result
 

@@ -9,7 +9,7 @@ import asyncio
 from funasr import AutoModel
 from config.logger import setup_logging
 from typing import Optional, Tuple, List
-from core.providers.asr.utils import lang_tag_filter
+from core.providers.asr.utils import lang_tag_filter, extract_asr_content
 from core.providers.asr.base import ASRProviderBase
 from core.providers.asr.dto.dto import InterfaceType
 
@@ -85,8 +85,9 @@ class ASRProvider(ASRProviderBase):
                     batch_size_s=60,
                 )
                 text = lang_tag_filter(result[0]["text"])
+                content = extract_asr_content(text)
                 logger.bind(tag=TAG).debug(
-                    f"语音识别耗时: {time.time() - start_time:.3f}s | 结果: {text['content']}"
+                    f"语音识别耗时: {time.time() - start_time:.3f}s | 结果: {content}"
                 )
 
                 return text, artifacts.file_path

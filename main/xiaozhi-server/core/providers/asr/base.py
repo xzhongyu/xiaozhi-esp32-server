@@ -15,6 +15,7 @@ import opuslib_next
 from abc import ABC, abstractmethod
 from config.logger import setup_logging
 from core.providers.asr.dto.dto import InterfaceType
+from core.providers.asr.utils import extract_asr_content
 from core.handle.receiveAudioHandle import startToChat
 from core.handle.reportHandle import enqueue_asr_report
 from core.utils.util import remove_punctuation_and_length
@@ -147,7 +148,7 @@ class ASRProviderBase(ABC):
 
                 # 转换为 JSON 字符串用于下游
                 enhanced_text = json.dumps(raw_text, ensure_ascii=False)
-                content_for_length_check = raw_text.get("content", "")
+                content_for_length_check = extract_asr_content(raw_text)
             else:
                 # 其他 ASR 返回的纯文本
                 if raw_text:
